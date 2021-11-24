@@ -6,24 +6,39 @@
 
 
 int main() {
-    std::string TAinput;
-    int lineNum;
+    std::string TAinput = "1";
     std::vector<std::string> fileHold;
 
     std::ifstream TAin("TA_File.txt");
-    std::ofstream TAwrite("TA_File.txt", std::ofstream::trunc);
     TAin.open("TA_File.txt");
-    std::getline(TAin, TAinput);
-    lineNum = std::stoi(TAinput);
-    for (int i = 0; i < lineNum; i++){
+    if (TAin.is_open()){
         std::getline(TAin, TAinput);
-        if (!TAinput.find("Alum")){
-            fileHold.push_back(TAinput);
+        while (std::getline(TAin, TAinput)){
+            std::cout << TAinput;
+            if (!TAinput.find("Alum")){
+                fileHold.push_back(TAinput);
+            }
         }
     }
+    else {
+        std::cout << "bwoah";
+    }
     TAin.close();
-    TAwrite.open("TA_File.txt");
 
+    std::ofstream TAwrite("TA_File.txt", std::ofstream::trunc);
+
+    for (int j = 0; j < fileHold.size(); j++){
+        std::cout << fileHold[j];
+    }
+
+    TAwrite.open("TA_File.txt");
+    TAwrite << fileHold.size();
+    TAwrite << "\n";
+    for (int j = 0; j < fileHold.size(); j++){
+        TAwrite << fileHold[j];
+        TAwrite << "\n";
+    }
+    TAwrite.close();
 
     return 0;
 }
