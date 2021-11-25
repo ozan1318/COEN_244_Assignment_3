@@ -6,47 +6,32 @@
 
 
 int main() {
-    std::string TAinput = "1", line;
+    int ctr;
+    std::string TAinput, line, substrAlum = "Alum";
     std::vector<std::string> fileHold;
 
-    std::ifstream TAin("TA_File.txt");
+    std::ifstream TAin;
     TAin.open("TA_File.txt");
-
-    if (TAin.is_open())
-    {
-        while ( getline (TAin,line) )
-        {
-            std::cout << line << '\n';
-        }
-        TAin.close();
-    }
-
-    else std::cout << "Unable to open file";
 
     if (TAin.is_open()){
         std::getline(TAin, TAinput);
         while (std::getline(TAin, TAinput)){
-            std::cout << TAinput;
-            if (!TAinput.find("Alum")){
+            if (TAinput.find(substrAlum) == std::string::npos){
                 fileHold.push_back(TAinput);
             }
         }
     }
     else {
-        std::cout << "bwoah";
+        std::cout << "The file is broken!";
     }
     TAin.close();
 
-    std::ofstream TAwrite("TA_File.txt");
-
-    for (int j = 0; j <= (fileHold.size() - 1); j++){
-        std::cout << fileHold[j];
-    }
-
+    std::ofstream TAwrite;
+    ctr = fileHold.size() - 1;
     TAwrite.open("TA_File.txt");
     TAwrite << fileHold.size();
     TAwrite << "\n";
-    for (int j = 0; j <= (fileHold.size() - 1); j++){
+    for (int j = 0; j <= ctr; j++){
         TAwrite << fileHold[j];
         TAwrite << "\n";
     }
