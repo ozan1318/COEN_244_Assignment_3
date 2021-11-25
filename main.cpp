@@ -4,20 +4,21 @@
 #include <string>
 #include <vector>
 
+TA* readTAFromFile(std::string TAinput);
 
 int main() {
     int ctr;
-    std::string TAinput, line, substrAlum = "Alum";
-    std::vector<std::string> fileHold;
+    std::string TAinput, line;
+    std::vector<TA*> TAVector;
 
     std::ifstream TAin;
     TAin.open("TA_File.txt");
-
     if (TAin.is_open()){
         std::getline(TAin, TAinput);
         while (std::getline(TAin, TAinput)){
-            if (TAinput.find(substrAlum) == std::string::npos){
-                fileHold.push_back(TAinput);
+            if (TAinput.find("Alum") == std::string::npos) {
+                TAinput += " ";
+                TAVector.push_back(readTAFromFile(TAinput));
             }
         }
     }
@@ -27,15 +28,44 @@ int main() {
     TAin.close();
 
     std::ofstream TAwrite;
-    ctr = fileHold.size() - 1;
+    ctr = TAVector.size() - 1;
     TAwrite.open("TA_File.txt");
-    TAwrite << fileHold.size();
+    TAwrite << TAVector.size();
     TAwrite << "\n";
     for (int j = 0; j <= ctr; j++){
-        TAwrite << fileHold[j];
+
         TAwrite << "\n";
     }
     TAwrite.close();
 
     return 0;
+}
+
+TA* readTAFromFile(std::string TAinput){
+    int c = 0, idFile, woHoFile;
+    std::string temp, deptFile, statusFile;
+    while (TAinput[c] != ' '){
+        temp += TAinput[c];
+        c++;
+    }
+    idFile = stoi(temp);
+    temp = "";
+    c++;
+    while (TAinput[c] != ' '){
+        deptFile += TAinput[c];
+        c++;
+    }
+    c++;
+    while (TAinput[c] != ' '){
+        statusFile += TAinput[c];
+        c++;
+    }
+    c++;
+    while (TAinput[c] != ' '){
+        temp += TAinput[c];
+        c++;
+    }
+    woHoFile = stoi(temp);
+    TA* newTA = new TA(idFile, deptFile, statusFile, woHoFile);
+    return newTA;
 }

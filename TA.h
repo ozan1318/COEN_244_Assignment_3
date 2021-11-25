@@ -17,6 +17,13 @@ public:
     void setStatus(std::string input);
     int getWorking_Hours();
     void setWorking_Hours(int input);
+
+    TA(int id, std::string dept, std::string stat, int woHo){
+        Student_ID = id;
+        Dept = dept;
+        Status = stat;
+        Working_Hours = woHo;
+    }
 };
 
 
