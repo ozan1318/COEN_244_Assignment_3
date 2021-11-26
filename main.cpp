@@ -55,7 +55,13 @@ int main() {
                 break;
             }
             case 2:{
-                
+                int choice2, order;
+                std::cout << "What would you like to sort the TA's by?\n1. Student ID's\n2. Departments\n3. Status\n4. Working Hours" << std::endl;
+                std::cin >> choice2;
+                std::cout << "How would you like to sort them?\n1. Ascending\n2.Descending" << std::endl;
+                std::cin >> order;
+
+
             }
             case 3:{
                 temp++;
@@ -161,3 +167,5 @@ void addTA(std::vector<TA*> &TAVector){
 
     TAVector.push_back(new TA(idInput, deptInput, statusInput, workHourInput));
 }
+
+
