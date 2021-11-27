@@ -10,6 +10,8 @@ void addTA(std::vector<TA*> &TAVector);
 
 int main() {
     int ctr;
+    auto getSIDPtr = &TA::getStudentID, getWoHoPtr = &TA::getWorking_Hours;
+    auto getStatPtr = &TA::getStatus, getDeptPtr = &TA::getDept;
     std::string TAInput, line;
     std::vector<TA*> TAVector;
 
@@ -29,20 +31,11 @@ int main() {
     }
     TAin.close();
 
-    std::ofstream TAWrite;
-    ctr = TAVector.size() - 1;
-    TAWrite.open("TA_File.txt");
-    TAWrite << TAVector.size();
-    TAWrite << "\n";
-    for (int j = 0; j <= ctr; j++){
-        TAWrite << TAVector[j]->getStudentID() << " " << TAVector[j]->getDept() << " " << TAVector[j]->getStatus() << " " << TAVector[j]->getWorking_Hours() << "\n";
-    }
-    TAWrite.close();
-
     int choice = 0, temp = 0;
-    std::cout << "File updated. What would you like to do next?\n1. Add new TA\n2. Sort existing TA's\n3. Quit";
+
     do {
-        do {
+        std::cout << "File updated. What would you like to do next?\n1. Add new TA\n2. Sort existing TA's\n3. Quit" << std::endl;
+        CHOICE:do {
             std::cin >> choice;
             if (choice <= 0 || choice >= 4){
                 std::cout << "\nIncorrect input! Please enter a number between 1 and 3.\n";
@@ -57,19 +50,93 @@ int main() {
             case 2:{
                 int choice2, order;
                 std::cout << "What would you like to sort the TA's by?\n1. Student ID's\n2. Departments\n3. Status\n4. Working Hours" << std::endl;
-                std::cin >> choice2;
+                INP1:std::cin >> choice2;
                 std::cout << "How would you like to sort them?\n1. Ascending\n2.Descending" << std::endl;
-                std::cin >> order;
+                INP2:std::cin >> order;
 
+                if (choice2 > 4 || choice2 < 0){
+                    std::cout << "Incorrect category input. Please enter an integer between 1 and 4." << std::endl;
+                    goto INP1;
+                }
 
+                if (order != 1 && order != 2){
+                    std::cout << "Incorrect sort input. Please enter 1 or 2" << std::endl;
+                    goto INP2;
+                }
+
+                switch (choice2){
+                    case 1: {
+                        sort(TAVector.begin(), TAVector.end(), [&getSIDPtr, choice2](auto& lhs, auto& rhs) {
+                            if (choice2 == 1){
+                                return (lhs->*getSIDPtr)() < (rhs->*getSIDPtr)();
+                            }
+                            else if (choice2 ==2){
+                                return (lhs->*getSIDPtr)() > (rhs->*getSIDPtr)();
+                            }
+                        });
+                        break;
+                    }
+                    case 2:{
+                        sort(TAVector.begin(), TAVector.end(), [&getDeptPtr, choice2](auto& lhs, auto& rhs) {
+                            if (choice2 == 1){
+                                return (lhs->*getDeptPtr)() < (rhs->*getDeptPtr)();
+                            }
+                            else if (choice2 ==2){
+                                return (lhs->*getDeptPtr)() > (rhs->*getDeptPtr)();
+                            }
+                        });
+                        break;
+                    }
+                    case 3:{
+                        sort(TAVector.begin(), TAVector.end(), [&getStatPtr, choice2](auto& lhs, auto& rhs) {
+                            if (choice2 == 1){
+                                return (lhs->*getStatPtr)() < (rhs->*getStatPtr)();
+                            }
+                            else if (choice2 ==2){
+                                return (lhs->*getStatPtr)() > (rhs->*getStatPtr)();
+                            }
+                        });
+                        break;
+                    }
+                    case 4:{
+                        sort(TAVector.begin(), TAVector.end(), [&getWoHoPtr, choice2](auto& lhs, auto& rhs) {
+                            if (choice2 == 1){
+                                return (lhs->*getWoHoPtr)() < (rhs->*getWoHoPtr)();
+                            }
+                            else if (choice2 ==2){
+                                return (lhs->*getWoHoPtr)() > (rhs->*getWoHoPtr)();
+                            }
+                        });
+                        break;
+                    }
+                    default:{
+                        std::cout << "You have entered an incorrect input. The system will sort by the Student ID number.";
+                    }
+                }
+                break;
             }
             case 3:{
                 temp++;
                 break;
             }
+            default:{
+                std::cout << "You somehow managed to enter an incorrect menu input and got through the check. Sending you back to the menu input, please enter a number between 1 and 3";
+                goto CHOICE;
+
+            }
         }
 
     } while(temp == 0);
+
+    std::ofstream TAWrite;
+    ctr = TAVector.size() - 1;
+    TAWrite.open("TA_File.txt");
+    TAWrite << TAVector.size();
+    TAWrite << "\n";
+    for (int j = 0; j <= ctr; j++){
+        TAWrite << TAVector[j]->getStudentID() << " " << TAVector[j]->getDept() << " " << TAVector[j]->getStatus() << " " << TAVector[j]->getWorking_Hours() << "\n";
+    }
+    TAWrite.close();
 
     return 0;
 }
@@ -167,5 +234,3 @@ void addTA(std::vector<TA*> &TAVector){
 
     TAVector.push_back(new TA(idInput, deptInput, statusInput, workHourInput));
 }
-
-
