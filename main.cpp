@@ -51,14 +51,12 @@ int main() {
                 int choice2, order;
                 std::cout << "What would you like to sort the TA's by?\n1. Student ID's\n2. Departments\n3. Status\n4. Working Hours" << std::endl;
                 INP1:std::cin >> choice2;
-                std::cout << "How would you like to sort them?\n1.Ascending\n2.Descending" << std::endl;
-                INP2:std::cin >> order;
-
                 if (choice2 > 4 || choice2 < 0){
                     std::cout << "Incorrect category input. Please enter an integer between 1 and 4." << std::endl;
                     goto INP1;
                 }
-
+                std::cout << "How would you like to sort them?\n1.Ascending\n2.Descending" << std::endl;
+                INP2:std::cin >> order;
                 if (order != 1 && order != 2){
                     std::cout << "Incorrect sort input. Please enter 1 or 2" << std::endl;
                     goto INP2;
@@ -90,10 +88,10 @@ int main() {
                     case 3:{
                         sort(TAVector.begin(), TAVector.end(), [&getStatPtr, choice2](auto& lhs, auto& rhs) {
                             if (choice2 == 1){
-                                return (lhs->*getStatPtr)() < (rhs->*getStatPtr)();
+                                return (lhs->*getStatPtr)() > (rhs->*getStatPtr)();
                             }
                             else if (choice2 ==2){
-                                return (lhs->*getStatPtr)() > (rhs->*getStatPtr)();
+                                return (lhs->*getStatPtr)() < (rhs->*getStatPtr)();
                             }
                         });
                         break;
