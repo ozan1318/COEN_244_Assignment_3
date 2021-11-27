@@ -51,7 +51,7 @@ int main() {
                 int choice2, order;
                 std::cout << "What would you like to sort the TA's by?\n1. Student ID's\n2. Departments\n3. Status\n4. Working Hours" << std::endl;
                 INP1:std::cin >> choice2;
-                std::cout << "How would you like to sort them?\n1. Ascending\n2.Descending" << std::endl;
+                std::cout << "How would you like to sort them?\n1.Ascending\n2.Descending" << std::endl;
                 INP2:std::cin >> order;
 
                 if (choice2 > 4 || choice2 < 0){
@@ -79,10 +79,10 @@ int main() {
                     case 2:{
                         sort(TAVector.begin(), TAVector.end(), [&getDeptPtr, choice2](auto& lhs, auto& rhs) {
                             if (choice2 == 1){
-                                return (lhs->*getDeptPtr)() < (rhs->*getDeptPtr)();
+                                return (lhs->*getDeptPtr)() > (rhs->*getDeptPtr)();
                             }
                             else if (choice2 ==2){
-                                return (lhs->*getDeptPtr)() > (rhs->*getDeptPtr)();
+                                return (lhs->*getDeptPtr)() < (rhs->*getDeptPtr)();
                             }
                         });
                         break;
