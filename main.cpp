@@ -10,7 +10,8 @@ void addTA(std::vector<TA*> &TAVector);
 
 int main() {
     int ctr;
-    auto getSIDPtr = &TA::getStudentID, getWoHoPtr = &TA::getWorking_Hours;
+    const std::regex menu1("^[1-3]{1}$"), menu2("^[1-4]{1}$");
+    auto getSIDPtr = &TA::getStudentID, getWoHoPtr = &TA::getWorking_Hours; // function pointers are created for the member getters to make the lambdas shorter
     auto getStatPtr = &TA::getStatus, getDeptPtr = &TA::getDept;
     std::string TAInput, line;
     std::vector<TA*> TAVector;
@@ -18,11 +19,11 @@ int main() {
     std::ifstream TAin;
     TAin.open("TA_File.txt");
     if (TAin.is_open()){
-        std::getline(TAin, TAInput);
-        while (std::getline(TAin, TAInput)){
-            if (TAInput.find("Alum") == std::string::npos) {
+        std::getline(TAin, TAInput);  // take the TA counter from the file, this isn't important for the code
+        while (std::getline(TAin, TAInput)){ // take new TA from the file
+            if (TAInput.find("Alum") == std::string::npos) { // check if it's an Alum TA, exclude if it is
                 TAInput += " ";
-                TAVector.push_back(readTAFromFile(TAInput));
+                TAVector.push_back(readTAFromFile(TAInput)); // pass the TA information to readTAFromFile to create a new TA, and add it to the vector
             }
         }
     }
@@ -34,10 +35,11 @@ int main() {
     int choice = 0, temp = 0;
 
     do {
-        std::cout << "File updated. What would you like to do next?\n1. Add new TA\n2. Sort existing TA's\n3. Quit" << std::endl;
+        std::cout << "File updated. What would you like to do next?\n1. Add new TA\n2. Sort existing TA's\n3. Quit" << std::endl; // menu
         CHOICE:do {
             std::cin >> choice;
-            if (choice <= 0 || choice >= 4){
+            std::string choiceCheck = std::to_string(choice);
+            if (!std::regex_match(choiceCheck, menu1)){ // check if menu input is correct
                 std::cout << "\nIncorrect input! Please enter a number between 1 and 3.\n";
             }
         } while (choice <= 0 || choice >= 4);
@@ -51,7 +53,8 @@ int main() {
                 int choice2, order;
                 std::cout << "What would you like to sort the TA's by?\n1. Student ID's\n2. Departments\n3. Status\n4. Working Hours" << std::endl;
                 INP1:std::cin >> choice2;
-                if (choice2 > 4 || choice2 < 0){
+                std::string choice2check = std::to_string(choice2);
+                if (!std::regex_match(choice2check, menu2)){
                     std::cout << "Incorrect category input. Please enter an integer between 1 and 4." << std::endl;
                     goto INP1;
                 }
@@ -142,34 +145,34 @@ int main() {
 TA* readTAFromFile(std::string TAInput){
     int c = 0, idFile, woHoFile;
     std::string temp, deptFile, statusFile;
-    while (TAInput[c] != ' '){
+    while (TAInput[c] != ' '){ // read the ID until the first space
         temp += TAInput[c];
         c++;
     }
-    idFile = stoi(temp);
+    idFile = stoi(temp); // the ID and work hours are input as strings but stored as ints, they are converted here
     temp = "";
     c++;
-    while (TAInput[c] != ' '){
+    while (TAInput[c] != ' '){ // read the department until the next space
         deptFile += TAInput[c];
         c++;
     }
     c++;
-    while (TAInput[c] != ' '){
+    while (TAInput[c] != ' '){ // read the status until the next space
         statusFile += TAInput[c];
         c++;
     }
     c++;
-    while (TAInput[c] != ' '){
+    while (TAInput[c] != ' '){ // read the work hours until the next space (when the line is over)
         temp += TAInput[c];
         c++;
     }
     woHoFile = stoi(temp);
-    TA* newTA = new TA(idFile, deptFile, statusFile, woHoFile);
+    TA* newTA = new TA(idFile, deptFile, statusFile, woHoFile); // new TA is created and returned to the main to add to the vector
     return newTA;
 }
 
 void addTA(std::vector<TA*> &TAVector){
-    const std::regex integer ("^[0-9]*$"), dept ("^[A-Z]{3,4}$"), stat ("^[a-zA-Z]{4,5}$");
+    const std::regex integer ("^[0-9]*$"), dept ("^[A-Z]{3,4}$"), stat ("^[a-zA-Z]{4,5}$"); // create regex's
     int idInput, workHourInput, ctr = TAVector.size() - 1;
     std::string deptInput, statusInput, idInCheck, whInCheck;
     bool newID = false, validIDIn = false, validDeptIn = false, validStatIn = false, validWHIn = false;
@@ -200,6 +203,7 @@ void addTA(std::vector<TA*> &TAVector){
     do{ // check the validity of the department input
         std::cin >> deptInput;
         if (!std::regex_match(deptInput, dept)){// check if it's a string of 3-4 capital letters
+            /*note: if a user enters a letter in the ID input, the message below could be thrown as extra things remain in the input stream*/
             std::cout << "Incorrect input! Please only enter the 3-4 letter abbreviation of the department in all caps (ex: 'ECE' or 'MIAE')." << std::endl;
         }
         else{
@@ -230,5 +234,5 @@ void addTA(std::vector<TA*> &TAVector){
         }
     } while(!validWHIn);
 
-    TAVector.push_back(new TA(idInput, deptInput, statusInput, workHourInput));
+    TAVector.push_back(new TA(idInput, deptInput, statusInput, workHourInput)); // new TA is added to the vector
 }
